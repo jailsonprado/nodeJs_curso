@@ -1,0 +1,20 @@
+h1{
+  color: black;
+}
+
+h2{
+  color: orange;
+}
+
+p{
+  color: black;
+}
+
+div{
+  text-align: center;
+  align-items: center;
+  display: block;
+  width: 300px;
+  height: 200px;
+  background-color: chartreuse;
+}

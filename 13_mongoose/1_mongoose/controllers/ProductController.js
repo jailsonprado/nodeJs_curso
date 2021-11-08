@@ -2,7 +2,7 @@ const Product = require('../models/Product');
 
 module.exports = class ProductController {
   static async showProducts(req, res) {
-    const products = await Product.getProduct();
+    const products = await Product.find().lean(); // metódo para busca de dados
 
     res.render('products/all', { products });
   }
@@ -11,45 +11,45 @@ module.exports = class ProductController {
     res.render('products/create');
   }
 
-  static createProductPost(req, res) {
+  static async createProductPost(req, res) {
     const name = req.body.name;
     const image = req.body.image;
     const price = req.body.price;
     const description = req.body.description;
 
-    const product = new Product(name, image, price, description);
+    const product = new Product({ name, image, price, description });
     console.log(product);
 
-    product.save();
+    await product.save();
     res.redirect('/products');
   }
 
   static async getProduct(req, res) {
     const id = req.params.id;
 
-    const product = await Product.getProductById(id);
+    const product = await Product.findById(id).lean();
 
     res.render('products/product', { product });
   }
 
-  // deletando dados
+  //   // deletando dados
   static async removeProduct(req, res) {
     const id = req.params.id;
 
-    await Product.removeProductById(id);
+    await Product.deleteOne({ _id: id });
 
     res.redirect('/products');
   }
 
-  // Editando dados, mostrando values de cada um
+  //   // Editando dados, mostrando values de cada um
   static async editProduct(req, res) {
     const id = req.params.id;
 
-    const product = await Product.getProductById(id);
+    const product = await Product.findById(id).lean();
 
     res.render('products/edit', { product });
   }
-  // fazendo method Post de update de cada dado
+  //   // fazendo method Post de update de cada dado
   static async editProductPost(req, res) {
     const id = req.body.id;
     const name = req.body.name;
@@ -57,9 +57,9 @@ module.exports = class ProductController {
     const price = req.body.price;
     const description = req.body.description;
 
-    const product = new Product(name, image, price, description);
+    const product = { name, image, price, description };
 
-    await product.updateProduct(id);
+    await Product.updateOne({ _id: id }, product);
 
     res.redirect('/products');
   }
